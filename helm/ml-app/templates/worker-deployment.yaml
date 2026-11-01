@@ -30,7 +30,7 @@ spec:
             - /bin/bash
             - -c
             - |
-              python -c "import asyncio; from ml_serving_capstone.kafka_worker import run_worker; asyncio.run(run_worker())"
+              python -c "import asyncio, logging; logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s'); from ml_serving_capstone.kafka_worker import run_worker; asyncio.run(run_worker())"
           envFrom:
             - configMapRef:
                 name: {{ include "ml-app.fullname" . }}-config
