@@ -27,9 +27,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - python
-            - -m
-            - ml_serving_capstone.kafka_worker
+            - /bin/bash
+            - -c
+            - |
+              python -c "import asyncio; from ml_serving_capstone.kafka_worker import run_worker; asyncio.run(run_worker())"
           envFrom:
             - configMapRef:
                 name: {{ include "ml-app.fullname" . }}-config
