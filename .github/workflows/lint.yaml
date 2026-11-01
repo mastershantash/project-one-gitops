@@ -1,0 +1,29 @@
+name: GitOps Chart Quality & Lint
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  helm-lint:
+    name: Lint Helm Charts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: "v3.14.0"
+
+      - name: Lint ml-infra Chart
+        run: helm lint helm/ml-infra
+
+      - name: Lint ml-app Chart
+        run: helm lint helm/ml-app
