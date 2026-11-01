@@ -1,5 +1,9 @@
 # Shared Infrastructure Values
 
+# Zero-Dollar Network Policy Isolation
+networkPolicy:
+  enabled: true
+
 redis:
   enabled: true
   image: redis:7-alpine

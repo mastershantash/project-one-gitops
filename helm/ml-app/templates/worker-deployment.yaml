@@ -1,0 +1,43 @@
+{{- if .Values.worker.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ml-app.fullname" . }}-worker
+  labels:
+    {{- include "ml-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: streaming-worker
+spec:
+  replicas: {{ .Values.worker.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "ml-app.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: streaming-worker
+  template:
+    metadata:
+      labels:
+        {{- include "ml-app.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: streaming-worker
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-worker
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - python
+            - -m
+            - ml_serving_capstone.kafka_worker
+          envFrom:
+            - configMapRef:
+                name: {{ include "ml-app.fullname" . }}-config
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+{{- end }}

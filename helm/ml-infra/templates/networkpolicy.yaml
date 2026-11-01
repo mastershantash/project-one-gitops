@@ -1,0 +1,34 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ml-infra-isolation
+  labels:
+    app.kubernetes.io/part-of: ml-infra
+spec:
+  podSelector: {} # Applies to all pods in ml-infra namespace
+  policyTypes:
+    - Ingress
+  ingress:
+    # 1. Allow traffic from within the same namespace (ml-infra)
+    - from:
+        - podSelector: {}
+    # 2. Allow cross-namespace traffic specifically from ml-app namespace to Redis and Kafka
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ml-app
+      ports:
+        - protocol: TCP
+          port: 6379
+        - protocol: TCP
+          port: 9092
+    # 3. Allow ingress to NodePort / monitoring services from any source
+    - ports:
+        - protocol: TCP
+          port: 8080 # Kafka UI
+        - protocol: TCP
+          port: 3000 # Grafana
+        - protocol: TCP
+          port: 9090 # Prometheus
+{{- end }}

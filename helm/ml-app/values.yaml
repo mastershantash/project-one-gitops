@@ -12,6 +12,23 @@ service:
   port: 80
   targetPort: 8000
 
+# Zero-Dollar Ingress Routing & Rate Limiting
+ingress:
+  enabled: true
+  rateLimitRps: 100
+  path: /
+  annotations: {}
+
+# Zero-Dollar High Availability Pod Disruption Budget
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+# Zero-Dollar Dedicated Kafka Streaming Worker Deployment
+worker:
+  enabled: true
+  replicaCount: 1
+
 # Cross-Namespace DNS routing to shared ml-infra platform
 env:
   REDIS_HOST: "redis-service.ml-infra"
