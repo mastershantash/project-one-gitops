@@ -48,13 +48,15 @@ spec:
               value: "0"
             - name: KAFKA_NUM_PARTITIONS
               value: "1"
+            - name: KAFKA_HEAP_OPTS
+              value: "-Xmx512m -Xms256m"
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 500m
+              cpu: 200m
               memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1024Mi
 ---
 apiVersion: v1
 kind: Service
